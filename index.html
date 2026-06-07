@@ -1,0 +1,82 @@
+# crypto-dashboard
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Crypto Scanner</title>
+<style>
+body{
+background:#111;
+color:white;
+font-family:Arial;
+padding:20px;
+}
+input{
+padding:10px;
+width:250px;
+}
+button{
+padding:10px;
+}
+table{
+width:100%;
+margin-top:20px;
+border-collapse:collapse;
+}
+td,th{
+border:1px solid #333;
+padding:8px;
+}
+</style>
+</head>
+<body>
+
+<h1>Crypto Scanner</h1>
+
+<input id="search" placeholder="PEPE">
+<button onclick="scan()">Scan</button>
+
+<table>
+<thead>
+<tr>
+<th>Token</th>
+<th>Chain</th>
+<th>Liquidity</th>
+<th>Volume</th>
+</tr>
+</thead>
+<tbody id="result"></tbody>
+</table>
+
+<script>
+async function scan(){
+
+let q=document.getElementById("search").value;
+
+let r=await fetch(
+"https://api.dexscreener.com/latest/dex/search?q="+q
+);
+
+let d=await r.json();
+
+let html="";
+
+d.pairs.forEach(p=>{
+
+html+=`
+<tr>
+<td>${p.baseToken.symbol}</td>
+<td>${p.chainId}</td>
+<td>$${p.liquidity?.usd||0}</td>
+<td>$${p.volume?.h24||0}</td>
+</tr>
+`;
+
+});
+
+document.getElementById("result").innerHTML=html;
+}
+</script>
+
+</body>
+</html>
